@@ -3,9 +3,11 @@ const validator = require("validator");
 const User = require("../models/User");
 
 exports.getLogin = (req, res) => {
+  console.log(req.user)
   if (req.user) {
     return res.redirect("/profile");
   }
+  console.log('noUser logged in')
   res.render("login", {
     title: "Login",
   });
@@ -25,21 +27,26 @@ exports.postLogin = (req, res, next) => {
   req.body.email = validator.normalizeEmail(req.body.email, {
     gmail_remove_dots: false,
   });
-
+console.log(validationErrors)
   passport.authenticate("local", (err, user, info) => {
     if (err) {
+      console.log('firstError')
       return next(err);
     }
     if (!user) {
+      console.log('No User')
       req.flash("errors", info);
       return res.redirect("/login");
     }
     req.logIn(user, (err) => {
       if (err) {
+        console.log('Error in Log In')
         return next(err);
       }
       req.flash("success", { msg: "Success! You are logged in." });
-      res.redirect(req.session.returnTo || "/profile");
+      console.log('Successful Login')
+      // res.redirect("/profile");
+      return res.redirect(req.session.returnTo || "/profile");
     });
   })(req, res, next);
 };
@@ -56,7 +63,7 @@ exports.logout = (req, res) => {
   });
 };
 
-exports.getSignup = (req, res) => {
+exports.getSignup = async (req, res) => {
   if (req.user) {
     return res.redirect("/profile");
   }
@@ -65,7 +72,7 @@ exports.getSignup = (req, res) => {
   });
 };
 
-exports.postSignup = (req, res, next) => {
+exports.postSignup = async (req, res, next) => {
   const validationErrors = [];
   if (!validator.isEmail(req.body.email))
     validationErrors.push({ msg: "Please enter a valid email address." });
@@ -75,7 +82,7 @@ exports.postSignup = (req, res, next) => {
     });
   if (req.body.password !== req.body.confirmPassword)
     validationErrors.push({ msg: "Passwords do not match" });
-
+console.log(validationErrors)
   if (validationErrors.length) {
     req.flash("errors", validationErrors);
     return res.redirect("../signup");
@@ -90,29 +97,52 @@ exports.postSignup = (req, res, next) => {
     password: req.body.password,
   });
 
-  User.findOne(
-    { $or: [{ email: req.body.email }, { userName: req.body.userName }] },
-    (err, existingUser) => {
-      if (err) {
-        return next(err);
-      }
-      if (existingUser) {
+
+  const existingUser = await User.findOne(
+    { $or: [{ email: req.body.email }, { userName: req.body.userName }] }
+  )
+
+  if (existingUser) {
+      console.log('user exists')
         req.flash("errors", {
           msg: "Account with that email address or username already exists.",
         });
         return res.redirect("../signup");
       }
-      user.save((err) => {
+  user.save()
+  .then(usr => {req.logIn(user, (err) => {
         if (err) {
           return next(err);
         }
-        req.logIn(user, (err) => {
-          if (err) {
-            return next(err);
-          }
-          res.redirect("/profile");
-        });
+        console.log('successful User')
+        res.redirect("/profile");
       });
-    }
-  );
+  });
+
+
+  // User.findOne(
+  //   { $or: [{ email: req.body.email }, { userName: req.body.userName }] },
+  //   (err, existingUser) => {
+  //     if (err) {
+  //       return next(err);
+  //     }
+  //     if (existingUser) {
+  //       req.flash("errors", {
+  //         msg: "Account with that email address or username already exists.",
+  //       });
+  //       return res.redirect("../signup");
+  //     }
+  //     user.save((err) => {
+  //       if (err) {
+  //         return next(err);
+  //       }
+  //       req.logIn(user, (err) => {
+  //         if (err) {
+  //           return next(err);
+  //         }
+  //         res.redirect("/profile");
+  //       });
+  //     });
+  //   }
+  // );
 };

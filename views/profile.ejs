@@ -1,46 +1,62 @@
 <%- include('partials/header') -%>
-<div class="container">
-  <div class="row mt-5">
-      <div class="col-6">
-          <div>
-              <p><strong>User Name</strong>: <%= user.userName %></p>
-              <p><strong>Email</strong>: <%= user.email %></p>
-              <a href="/logout" class="col-3 btn btn-primary">Logout</a>
-          </div>
-          <div class="mt-5">
-            <h2>Add a post</h2>
-            <form action="/post/createPost" enctype="multipart/form-data" method="POST">
-              <div class="mb-3">
-                  <label for="title" class="form-label">Title</label>
-                  <input type="text" class="form-control" id="title" name="title">
-              </div>
-              <div class="mb-3">
-                <label for="caption" class="form-label">Caption</label>
-                <textarea class="form-control" id="caption" name="caption"></textarea>
-              </div>
-              <div class="mb-3">
-                <label for="imgUpload" class="form-label">Image</label>
-                <input type="file" class="form-control" id="imageUpload" name="file">
-              </div>
-              <button type="submit" class="btn btn-primary" value="Upload">Submit</button>
-            </form>
-          </div>
-      </div>
-      <div class="col-6">
-        <ul class="row list-unstyled">
-        <% for(var i=0; i<posts.length; i++) {%>
-          <li class="col-6 justify-content-between mt-5">
-            <a href="/post/<%= posts[i]._id%>">
-              <img class="img-fluid" src="<%= posts[i].image%>">
-            </a>
-          </li>
-        <% } %>
-        </ul>
-        <div class="row justify-content-center mt-5">
-          <a class="btn btn-primary" href="/feed">Return to Feed</a>
-        </div>  
-      </div>  
-    </div>
-  </div>
-</div>
-<%- include('partials/footer') -%>
+  <div>Logged In</div>
+  <form action="/entry/createEntry" method="POST">
+    <input type="url" placeholder="Feed me some content" name="url">
+    <!-- <input type="text" placeholder="quote" name="quote"> -->
+    <button type="submit"> Submit </button>
+  </form>
+  <label>Feed</label>
+  <select placeholder="Select Your Feed" id="feedSelect">
+    <!-- <option value="" disabled selected>Select Your Feed</option> -->
+    <option value="main" <%= entries.some(e => e.favorited === false) ? "selected" : "" %>>Main</option>
+    <option value="favorites" <%= entries.every(e => e.favorited === true) ? "selected" : "" %>>Favorites</option>
+  </select>
+
+  
+
+  <ul class="quotes">
+    <h2>Hello</h2>
+    <!-- Loop through quotes -->
+    <% for(var i=0; i < entries.length; i++) {%>
+      <li class="quote">
+        <!-- Output name from the iterated quote object -->
+        <span><a href="<%= entries[i].url %>">
+            <%= entries[i].url %>
+          </a></span>:
+        <!-- Output quote from the iterated quote object -->
+        <span>
+          <%= entries[i].title %>
+        </span>
+        <span>
+          <%= entries[i].description %>
+        </span>
+        <span class="entryID" id="entryID">
+          <%= entries[i]._id %>
+        </span>
+          <button class="btn btn-primary fa fa-star <%= entries[i].favorited ? 'fa-solid' : 'fa-regular' %>" type="submit" data-id="<%= entries[i]._id %>" data-favorited= "<%= entries[i].favorited %>"></button>
+        <!-- <span><i class="<%= entries[i].favorited ? 'fa-solid' : 'fa-regular' %> fa-star"></i></span> -->
+        <form action="/entry/deleteEntry/<%= entries[i]._id %>?_method=DELETE" method="POST" class="col-3">
+          <button class="btn btn-primary fa fa-trash" type="submit">Delete</button>
+        </form>
+      </li>
+      <% } %>
+  </ul>
+
+
+  <!-- // deletePost: async (req, res) => {
+    //   try {
+    //     // Find post by id
+    //     let post = await Post.findById({ _id: req.params.id });
+  
+    //     // Delete image from cloudinary
+    //     await cloudinary.uploader.destroy(post.cloudinaryId);
+    //     // Delete post from db
+    //     await Post.deleteOne({ _id: req.params.id });
+    //     console.log("Deleted Post");
+    //     res.redirect("/profile");
+    //   } catch (err) {
+    //     res.redirect("/profile");
+    //   }
+    // }, -->
+
+  <%- include('partials/footer') -%>
