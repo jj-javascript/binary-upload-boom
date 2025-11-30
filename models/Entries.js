@@ -31,4 +31,15 @@ const EntrySchema = new mongoose.Schema({
   favicon: String
 });
 
+// const userSchema = new mongoose.Schema ({
+//   createdByID: {
+//     type: mongoose.Schema.Types.ObjectId,
+//     ref: "User",
+//   },
+//   feedName: {
+//     type: String,
+//     required: true,
+//   }
+// })
+
 module.exports = mongoose.model("Entry", EntrySchema);

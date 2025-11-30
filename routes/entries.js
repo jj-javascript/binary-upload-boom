@@ -14,6 +14,8 @@ router.put("/favoriteEntry/:id", entriesController.favoriteEntry);
 
 router.get("/getFavorites", entriesController.getFavorites);
 
+// router.post("/createFeed", entriesController.createFeed)
+
 router.delete("/deleteEntry/:id", entriesController.deleteEntry);
 
 module.exports = router;

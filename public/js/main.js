@@ -1,8 +1,56 @@
 var favorite = document.querySelectorAll('.fa-star');
-
 var feedOption = document.getElementById('feedSelect');
+var feedName = document.getElementById('feedName')
+var feedSubmitButton = document.getElementById('submitNewFeed')
+var createFeedButton = document.getElementById('createNewFeed')
 
 feedOption.addEventListener('change', changeFeed)
+
+
+createFeedButton.addEventListener ('click', getFeedOptions)
+
+feedName.addEventListener('input', showSubmit)
+
+feedSubmitButton.addEventListener('click', createNewFeed )
+
+function getFeedOptions(){
+feedName.style.display = 'unset'
+}
+
+function showSubmit () {
+  feedSubmitButton.style.display = 'unset'
+}
+
+function createNewFeed () {
+  var feedName = document.getElementById('feedName')
+  if(feedName.value === ""){
+    alert('Please Submit A Value!')
+  } else {
+    let option = document.createElement("option")
+    option.value = feedName.value;
+    option.textContent = feedName.value
+    feedOption.appendChild(option)
+    // option.setAttribute ("id", )
+  }
+}
+
+// function run1 () {
+//   if(inputBox.value === ""){
+//       alert('Make sure to add your task!');
+//   }else{
+//       let listContainer = document.getElementById("docheck");
+//       let li = document.createElement("li");
+//      let newCheckBoxID = 'checkbox_' + li.innerHTML;
+//       let newCheckBox = document.createElement("INPUT");
+//       newCheckBox.setAttribute("type", "checkbox");
+//       newCheckBox.setAttribute("id", newCheckBoxID);
+//       newCheckBox.setAttribute("class", 'item');
+//       li.innerHTML = inputBox.value;
+//       listContainer.appendChild(li);
+//       li.appendChild(newCheckBox);
+//       console.log(document.querySelector("#docheck"));
+//   }
+// }
 
 
 function changeFeed(){
@@ -13,6 +61,33 @@ function changeFeed(){
     window.location.href = '/profile';
   }
 }
+
+Array.from(favorite).forEach(function(element) {
+    element.addEventListener('click', function(){
+      const favorite = this.dataset.favorited
+      const id = this.dataset.id
+      fetch('/entry/favoriteEntry/' + id, {
+        method: 'put',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify({
+          'favorited':favorite,
+        })
+      })
+      .then(data => {
+        console.log(data)
+        this.dataset.favorited = String(this.dataset.favorited === 'false')
+       if (favorite === 'true') {
+        this.classList.remove('fa-solid')
+        this.classList.add('fa-regular')
+       } else {
+        this.classList.add('fa-solid')
+        this.classList.remove('fa-regular')
+       }
+      })
+    });
+});
+
+
 
 // function changeFeed(){
 //   console.log(feedOption.value)
@@ -80,28 +155,3 @@ function changeFeed(){
 // }
 // )
 // })
-
-Array.from(favorite).forEach(function(element) {
-    element.addEventListener('click', function(){
-      const favorite = this.dataset.favorited
-      const id = this.dataset.id
-      fetch('/entry/favoriteEntry/' + id, {
-        method: 'put',
-        headers: {'Content-Type': 'application/json'},
-        body: JSON.stringify({
-          'favorited':favorite,
-        })
-      })
-      .then(data => {
-        console.log(data)
-        this.dataset.favorited = String(this.dataset.favorited === 'false')
-       if (favorite === 'true') {
-        this.classList.remove('fa-solid')
-        this.classList.add('fa-regular')
-       } else {
-        this.classList.add('fa-solid')
-        this.classList.remove('fa-regular')
-       }
-      })
-    });
-});

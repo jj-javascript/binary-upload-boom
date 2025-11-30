@@ -1,4 +1,4 @@
-const cloudinary = require("../middleware/cloudinary");
+// const cloudinary = require("../middleware/cloudinary");
 const Entry = require("../models/Entries");
 const cheerio = require('cheerio');
 const getFavicons = require('node-get-favicons');
@@ -8,9 +8,13 @@ module.exports = {
   getEntries: async (req, res) => {
     try {
       const entries = await Entry.find({ createdByID: req.user._id });
-      // const favoriteEntries = await Entry.find({ favorited: true });
-      // console.log(req.user._id)
-      // console.log('delivery', entries)
+
+      // const entries = await Entry.find({
+      //   createdAt: {$lt: lastEntryDate}
+      // })
+      // .sort({createdAt: -1})
+      // .limit(limit);
+     
       res.render("profile.ejs", { entries: entries, createdByID: req.user.id, url: req.body.url, title: req.body.title, description: req.body.description, favorited: false })
       // console.log('mcburger', favoriteEntries)
     } catch (err) {
@@ -54,22 +58,41 @@ module.exports = {
         var doc = cheerio.load(html);
         console.log({ doc })
 
-        // getFavicons.byUrl(`${req.body.url}`).then((favicons) => {
-        //   console.log(favicons);
-        //   [{
-        //     type: 'icon',
-        //     imgType: null,
-        //     href: '${req.body.url}',
-        //     sizes: null
-        //   }]
-        // });
+        let faviconUrl = null;
+        try {
+          const favicons = await getFavicons(req.body.url);
+          console.log('Favicons found:', favicons);
+
+          if (favicons && favicons.length > 0) {
+            const pngIcon = favicons.find(icon =>
+              icon.imgType = 'image/png' &&
+              icon.sizes &&
+              parseInt(icon.sizes) >= 32
+              );
+
+              const appleIcon = favicons.find(icon => icon.type === 'apple-touch-icon');
+              console.log('applio', appleIcon)
+              const anyIcon = favicons.find(icon => icon.href);
+              console.log('anymeal', anyIcon)
+              const selectedIcon = pngIcon || appleIcon || anyIcon;
+              faviconUrl = selectedIcon ? selectedIcon.href : null
+              console.log('selectah', selectedIcon)
+              console.log('favorito', faviconUrl)
+          }
+        } catch (faviconErr) {
+          console.log('Favicon fetch failed:', faviconErr);
+          const urlObj = new URL(req.body.url);
+          faviconUrl = `${urlObj.origin}/favicon.ico`
+        }
 
         var title = doc("head title")
         var meta = doc('meta[name="description"]')
-        var logo = doc('meta[type="image/png"]')
-        console.log('logo', logo)
+        // var logo = doc('meta[type="image/png"]')
+        // console.log('logo', logo)
+
+        console.log('Selected favicon URL:', faviconUrl)
         console.log(title)
-        await Entry.create({ createdByID: req.user.id, url: req.body.url, title: title.text(), description: meta.attr('content'), favorited: false, /*favicon: url*/})
+        await Entry.create({ createdByID: req.user.id, url: req.body.url, title: title.text(), description: meta.attr('content'), favorited: false, favicon: faviconUrl})
       }
       res.redirect("/profile")
 
@@ -106,6 +129,12 @@ module.exports = {
       console.log(err);
     }
   },
+  // createFeed: async (req, res) => {
+  //   try {
+  //     await Entry.
+  //   }
+  // }
+
   // getFeed,
   // createFeed,
   // shareContent,
