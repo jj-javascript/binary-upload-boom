@@ -2,12 +2,14 @@
 const Entry = require("../models/Entries");
 const cheerio = require('cheerio');
 const getFavicons = require('node-get-favicons');
+const Feed = require("../models/Feed")
 
 
 module.exports = {
   getEntries: async (req, res) => {
     try {
-      const entries = await Entry.find({ createdByID: req.user._id });
+      const entries = await Entry.find({ createdByID: req.user._id }).sort({ createdAt: -1 });
+      const userFeeds = await Feed.find({createdByID: req.user._id}).sort({name: 1})
 
       // const entries = await Entry.find({
       //   createdAt: {$lt: lastEntryDate}
@@ -15,7 +17,7 @@ module.exports = {
       // .sort({createdAt: -1})
       // .limit(limit);
      
-      res.render("profile.ejs", { entries: entries, createdByID: req.user.id, url: req.body.url, title: req.body.title, description: req.body.description, favorited: false })
+      res.render("profile.ejs", { entries: entries, userFeeds: userFeeds, createdByID: req.user.id, url: req.body.url, title: req.body.title, description: req.body.description, favorited: false })
       // console.log('mcburger', favoriteEntries)
     } catch (err) {
       console.log(err)

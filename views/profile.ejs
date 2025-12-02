@@ -3,69 +3,56 @@
 <div id="userActions">
   <form action="/entry/createEntry" method="POST">
     <input type="url" placeholder="Feed me some content" name="url">
-    <!-- <input type="text" placeholder="quote" name="quote"> -->
+    <%# <input type="text" placeholder="quote" name="quote"> %>
     <button type="submit"> Submit </button>
   </form>
   <label>Feed</label>
   <select placeholder="Select Your Feed" id="feedSelect">
-    <!-- <option value="" disabled selected>Select Your Feed</option> -->
+    <%# <option value="" disabled selected>Select Your Feed</option> %>
     <option value="main" <%= entries.some(e => e.favorited === false) ? "selected" : "" %>>Main</option>
     <option value="favorites" <%= entries.every(e => e.favorited === true) ? "selected" : "" %>>Favorites</option>
+    <% for(var i=0; i < userFeeds.length; i++) {%>
+      <option value="<%= userFeeds[i]._id %>"><%= userFeeds[i].name %></option>
+      <% } %>
   </select>
 <button type="submit" id="createNewFeed">Create Feed</button>
-<input type="text" placeholder="Enter your feed name" name="feedName" id="feedName">
-<!-- <input type="color" placeholder="Enter your feed name" name="feedColor"> --->
-<form>
+<form action="/feed/createFeed" method="POST" >
+<input type="text" placeholder="Enter your feed name" name="name" id="feedName">
+<%# <input type="color" placeholder="Enter your feed name" name="feedColor"> %>
 <button type="submit" id="submitNewFeed">Submit</button>
 </form>
 </div>
 
   <ul class="quotes">
     <h2>Hello</h2>
-    <!-- Loop through quotes -->
     <% for(var i=0; i < entries.length; i++) {%>
       <li class="quote">
-        <!-- Output name from the iterated quote object -->
         <span>
-          <img src="<%= entries[i].favicon %>" alt="website icon" width="32" height="32" />
+          <img src="<%= entries[i].favicon %>" alt="website icon" width="48" height="48" />
         </span>
         <span><a href="<%= entries[i].url %>">
-            <%= entries[i].url %>
-          </a></span>:
-        <!-- Output quote from the iterated quote object -->
+          <%= entries[i].title -%>
+          </a></span>
         <span>
-          <%= entries[i].title %>
         </span>
         <span>
-          <%= entries[i].description %>
+          <%= entries[i].description -%>
         </span>
+        <select id="entryFeedSelect">
+          <option>Select Your Feed</option>
+          <% for(var j=0; j < userFeeds.length; j++) {%>
+            <option value="<%= userFeeds[j]._id %>"><%= userFeeds[j].name %></option>
+            <% } %>
+        </select>
         <span class="entryID" id="entryID">
           <%= entries[i]._id %>
         </span>
-          <button class="btn btn-primary fa fa-star <%= entries[i].favorited ? 'fa-solid' : 'fa-regular' %>" type="submit" data-id="<%= entries[i]._id %>" data-favorited= "<%= entries[i].favorited %>"></button>
-        <!-- <span><i class="<%= entries[i].favorited ? 'fa-solid' : 'fa-regular' %> fa-star"></i></span> -->
-        <form action="/entry/deleteEntry/<%= entries[i]._id %>?_method=DELETE" method="POST" class="col-3">
+          <button class="btn btn-primary fa fa-star <%= entries[i].favorited ? 'fa-solid' : 'fa-regular' -%>" type="submit" data-id="<%= entries[i]._id -%>" data-favorited="<%= entries[i].favorited -%>"></button>
+        <form action="/entry/deleteEntry/<%= entries[i]._id -%>?_method=DELETE" method="POST" class="col-3">
           <button class="btn btn-primary fa fa-trash" type="submit">Delete</button>
         </form>
       </li>
       <% } %>
   </ul>
-
-
-  <!-- // deletePost: async (req, res) => {
-    //   try {
-    //     // Find post by id
-    //     let post = await Post.findById({ _id: req.params.id });
-  
-    //     // Delete image from cloudinary
-    //     await cloudinary.uploader.destroy(post.cloudinaryId);
-    //     // Delete post from db
-    //     await Post.deleteOne({ _id: req.params.id });
-    //     console.log("Deleted Post");
-    //     res.redirect("/profile");
-    //   } catch (err) {
-    //     res.redirect("/profile");
-    //   }
-    // }, -->
 
   <%- include('partials/footer') -%>

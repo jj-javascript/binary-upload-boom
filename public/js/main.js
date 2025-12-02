@@ -11,7 +11,7 @@ createFeedButton.addEventListener ('click', getFeedOptions)
 
 feedName.addEventListener('input', showSubmit)
 
-feedSubmitButton.addEventListener('click', createNewFeed )
+// feedSubmitButton.addEventListener('click', createNewFeed )
 
 function getFeedOptions(){
 feedName.style.display = 'unset'
@@ -21,34 +21,44 @@ function showSubmit () {
   feedSubmitButton.style.display = 'unset'
 }
 
-function createNewFeed () {
-  var feedName = document.getElementById('feedName')
-  if(feedName.value === ""){
-    alert('Please Submit A Value!')
-  } else {
-    let option = document.createElement("option")
-    option.value = feedName.value;
-    option.textContent = feedName.value
-    feedOption.appendChild(option)
-    // option.setAttribute ("id", )
-  }
+
+let feedAssign = document.querySelectorAll('#entryFeedSelect')
+
+Array.from(feedAssign).forEach(function(element) {
+  element.addEventListener('change', assignFeed)
+});
+
+
+function assignFeed () {
+  const feedID = this.closest('li').querySelector('#entryFeedSelect').value
+  const entryID = this.closest('li').querySelector('#entryID').innerText.trim()
+  fetch('/feed/assignFeedEntries/', {
+  method: 'put',
+  headers: {'Content-Type': 'application/json'},
+  body: JSON.stringify({
+    'feedID': feedID,
+    'entryID': entryID,
+    'field3': 'field3',
+  })
+}) 
 }
 
-// function run1 () {
-//   if(inputBox.value === ""){
-//       alert('Make sure to add your task!');
-//   }else{
-//       let listContainer = document.getElementById("docheck");
-//       let li = document.createElement("li");
-//      let newCheckBoxID = 'checkbox_' + li.innerHTML;
-//       let newCheckBox = document.createElement("INPUT");
-//       newCheckBox.setAttribute("type", "checkbox");
-//       newCheckBox.setAttribute("id", newCheckBoxID);
-//       newCheckBox.setAttribute("class", 'item');
-//       li.innerHTML = inputBox.value;
-//       listContainer.appendChild(li);
-//       li.appendChild(newCheckBox);
-//       console.log(document.querySelector("#docheck"));
+
+// function createNewFeed () {
+//   var feedName = document.getElementById('feedName')
+//   var feedSelect = document.getElementById('feedSelect')
+//   var value = feedName.value
+//   if(value !== ""){
+//     let option = document.createElement("option")
+//     option.value = value
+//     option.text = value
+//     console.log (option)
+
+//     feedSelect.appendChild(option)
+//     feedSelect.value = value
+//     // option.setAttribute ("id", )
+//   } else {
+//     alert('Please Submit A Value!')
 //   }
 // }
 
@@ -57,8 +67,11 @@ function changeFeed(){
   if (feedOption.value === 'favorites') {
     console.log('Loading favorites…');
     window.location.href = '/entry/getFavorites';
-  } else {
+  } else if (feedOption.value === 'main'){
     window.location.href = '/profile';
+  }
+  else {
+  window.location.href = '/feed/getFeedEntries?feedID='+ feedOption.value
   }
 }
 
