@@ -17,7 +17,7 @@ module.exports = {
       // .sort({createdAt: -1})
       // .limit(limit);
      
-      res.render("profile.ejs", { entries: entries, userFeeds: userFeeds, createdByID: req.user.id, url: req.body.url, title: req.body.title, description: req.body.description, favorited: false })
+      res.render("profile.ejs", { entries: entries, userFeeds: userFeeds, createdByID: req.user.id, url: req.body.url, title: req.body.title, description: req.body.description, favorited: false, feedName: 'main' })
       // console.log('mcburger', favoriteEntries)
     } catch (err) {
       console.log(err)
@@ -26,6 +26,8 @@ module.exports = {
   getFavorites: async (req, res) => {
     try {
       const entries = await Entry.find({ favorited: true });
+      const userFeeds = await Feed.find({createdByID: req.user._id}).sort({name: 1})
+
       // console.log(req.user._id)
       // console.log('delivery', entries)
       //       const pipeline = [
@@ -41,7 +43,7 @@ module.exports = {
       //         printjson(change);
       //       });
       // console.log('yesborg', pipeline)      
-      res.render("profile.ejs", { entries: entries, createdByID: req.user.id })
+      res.render("profile.ejs", { entries: entries, createdByID: req.user.id, userFeeds: userFeeds, feedName: 'favorite' })
       console.log('mcburgered', entries)
       // What I need to figure out is how you can have something replace what's already rendered?
     } catch (err) {

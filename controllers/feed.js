@@ -23,6 +23,6 @@ getFeedEntries: async (req, res) => {
   const userFeeds = await Feed.find({createdByID: req.user._id}).sort({name: 1})
 const feed = await Feed.findById (req.query.feedID).populate('entries').exec()
 
-res.render("profile.ejs", {entries: feed.entries, userFeeds: userFeeds, createdByID: req.user.id, url: req.body.url, title: req.body.title, description: req.body.description, favorited: false  })
+res.render("profile.ejs", {entries: feed.entries, userFeeds: userFeeds, feedName: feed.name, createdByID: req.user.id, url: req.body.url, title: req.body.title, description: req.body.description, favorited: false  })
 } 
 }

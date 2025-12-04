@@ -1,18 +1,19 @@
 <%- include('partials/header') -%>
   <div>Logged In</div>
+<div>
 <div id="userActions">
   <form action="/entry/createEntry" method="POST">
     <input type="url" placeholder="Feed me some content" name="url">
     <%# <input type="text" placeholder="quote" name="quote"> %>
-    <button type="submit"> Submit </button>
+    <button class= "extend square round center large-elevate no-margin" type="submit"> Submit </button>
   </form>
   <label>Feed</label>
-  <select placeholder="Select Your Feed" id="feedSelect">
+  <select placeholder="Select Your Feed" id="feedSelect">favorited
     <%# <option value="" disabled selected>Select Your Feed</option> %>
-    <option value="main" <%= entries.some(e => e.favorited === false) ? "selected" : "" %>>Main</option>
-    <option value="favorites" <%= entries.every(e => e.favorited === true) ? "selected" : "" %>>Favorites</option>
+    <option value="main" <%= feedName === 'main' ? "selected" : "" %>>Main</option>
+    <option value="favorites" <%= feedName  === 'favorite' ? "selected" : "" %>>Favorites</option>
     <% for(var i=0; i < userFeeds.length; i++) {%>
-      <option value="<%= userFeeds[i]._id %>"><%= userFeeds[i].name %></option>
+      <option value="<%= userFeeds[i]._id %>" <%= userFeeds[i].name === feedName ? "selected" : "" %>><%= userFeeds[i].name %></option>
       <% } %>
   </select>
 <button type="submit" id="createNewFeed">Create Feed</button>
@@ -26,17 +27,20 @@
   <ul class="quotes">
     <h2>Hello</h2>
     <% for(var i=0; i < entries.length; i++) {%>
-      <li class="quote">
+      <li class="quote border surface round fill">
+        <article class="field left-align">
         <span>
-          <img src="<%= entries[i].favicon %>" alt="website icon" width="48" height="48" />
+          <img class="circle large" src="<%= entries[i].favicon %>" alt="website icon" width="48" height="48" />
         </span>
-        <span><a href="<%= entries[i].url %>">
+        <span><a href="<%= entries[i].url %>" target="_blank">
           <%= entries[i].title -%>
           </a></span>
+          <button class="extend square round center large-elevate" id="articleButton" data=""><span>Read Article</span></button>
         <span>
+          <iframe class="max" src="" id="articleFrame"></iframe>
         </span>
         <span>
-          <%= entries[i].description -%>
+          <p><%= entries[i].description -%></p>
         </span>
         <select id="entryFeedSelect">
           <option>Select Your Feed</option>
@@ -47,12 +51,33 @@
         <span class="entryID" id="entryID">
           <%= entries[i]._id %>
         </span>
-          <button class="btn btn-primary fa fa-star <%= entries[i].favorited ? 'fa-solid' : 'fa-regular' -%>" type="submit" data-id="<%= entries[i]._id -%>" data-favorited="<%= entries[i].favorited -%>"></button>
+        <div class="allbuttons">
+        <div class="sharebutton primary">
+          <span class="share">Share</span>
+          <div class="container tertiary">
+
+             <a href="https://www.facebook.com/sharer/sharer.php?u=<%= entries[i].url %>" target="_blank"><i class="fab fa-facebook-f"></i></a>
+        
+             <a href="https://x.com/share?url=<%= entries[i].url %>" target="_blank"><i class="fab fa-x-twitter"></i></a>
+
+             <a href="https://www.linkedin.com/feed/?linkOrigin=LI_BADGE&shareActive=true&shareUrl=<%= entries[i].url %>" target="_blank"><i class="fab fa-linkedin-in"></i></a>
+             
+             <a href="mailto:?subject=Your%20friend%20sent%20you%20this%20on%20Compilr%21&body=Hey%21%0A%0AYour%20friend%20thought%20you'd%20like%20this%3A%0A%0A<%= entries[i].url %>" target="_blank">
+              <i class="fa fa-envelope"></i>
+            </a>
+          </div>
+      </div>
+          <button class="fa fa-star <%= entries[i].favorited ? 'fa-solid' : 'fa-regular' -%>" type="submit" data-id="<%= entries[i]._id -%>" data-favorited="<%= entries[i].favorited -%>"></button>
         <form action="/entry/deleteEntry/<%= entries[i]._id -%>?_method=DELETE" method="POST" class="col-3">
-          <button class="btn btn-primary fa fa-trash" type="submit">Delete</button>
+          <button class="fa fa-trash responsive" type="submit" id="deleteButton">Delete</button>
         </form>
+      </div>
+        </article>
       </li>
       <% } %>
   </ul>
-
+  <form action="/logout"POST" class="col-3">
+    <button class="" type="submit" id="logoutButton">Logout</button>
+  </form>
+</div>
   <%- include('partials/footer') -%>

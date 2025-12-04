@@ -44,23 +44,6 @@ function assignFeed () {
 }
 
 
-// function createNewFeed () {
-//   var feedName = document.getElementById('feedName')
-//   var feedSelect = document.getElementById('feedSelect')
-//   var value = feedName.value
-//   if(value !== ""){
-//     let option = document.createElement("option")
-//     option.value = value
-//     option.text = value
-//     console.log (option)
-
-//     feedSelect.appendChild(option)
-//     feedSelect.value = value
-//     // option.setAttribute ("id", )
-//   } else {
-//     alert('Please Submit A Value!')
-//   }
-// }
 
 
 function changeFeed(){
@@ -101,70 +84,48 @@ Array.from(favorite).forEach(function(element) {
 });
 
 
+var articleButton = document.querySelectorAll('#articleButton')
 
-// function changeFeed(){
-//   console.log(feedOption.value)
-//   if (feedOption.value === 'favorites') {
-//     console.log('bananaboat')
-//     //  It can read that this is changing
-//     // But once this change happens we need it to be able  to deliver that from the database
-//     // This will take some sorting and returning it seems like
-//     fetch('/entry/getFavorites', {
-//       method: 'get',
-//       headers: {'ContentType': 'application/json'},
-//       body: JSON.stringify ({
-//         'favorited': true,
-//       }) 
-//     .then (res => res.json())
-//     .then (data => {
-//       console.log(data)
-//     })
-//   })
-//   // else {
-//   //   fetch('/entry/getEntries'), {
-//   //     method: 'get',
-//   //     headers: {'ContentType': 'application/json'},
-//   //     body: JSON.stringify ({
-//   //       'favorited': favorite,
-//   //     })
-//   //   }
+Array.from(articleButton).forEach(function(element){
+  let clickCount = 0; 
   
-//   // }
+  element.addEventListener('click', function() {
+    clickCount++;
+    
+    if(clickCount === 1) {
+      const entryURL = this.closest('li').querySelector('a').href;
+      this.closest('li').querySelector('iframe').src = entryURL;
+      this.closest('li').querySelector('iframe').style.display = 'unset';
+      this.innerText = "Close Article";
+    } else if(clickCount === 2) {
+      this.closest('li').querySelector('iframe').src = '';
+      this.closest('li').querySelector('iframe').style.display = 'none';
+      this.innerText = "Read Article";
+      clickCount = 0;
+    }
+  });
+});
 
-// } 
-// }
+// var clickCount = 0
+// var articleButton= document.querySelectorAll('#articleButton')
 
-// Parameters: li, boolean dataset value
-// Event Listener: Select on the value
-// Check what I did on the holiday App
-// Return needs to be Regular list or just list of favorites
-// In the JS function, I need to toggle show all or just favorites
-// 
 
-// Array.from(feedOption).forEach(function(feedOption){
-// feedOption.addEventListener('change', function(){
-// if (feedOption.value === 'Favorites') {
-//   console.log('bananaboat')
-//   fetch('/entry/getFavorites'), {
-//     method: 'put',
-//     headers: {'ContentType': 'application/json'},
-//     body: JSON.stringify ({
-//       'favorited': favorite,
-//     })
-//   } .then (data => {
-//     console.log(data)
-//   })
-// } 
-// else {
-//   fetch('/entry/getEntries'), {
-//     method: 'put',
-//     headers: {'ContentType': 'application/json'},
-//     body: JSON.stringify ({
-//       'favorited': favorite,
-//     })
+// Array.from(articleButton).forEach(function(element){
+//   element.addEventListener ('click', populateFrame)
+//   clickCount++;
+
+//   if(clickCount === 2) {
+// this.closest('li').querySelector('iframe').src = ''
+// this.closest('li').querySelector('iframe').style.display = 'none'
+// this.closest('li').querySelector('#articleButton').innerText = "Read Article"
+// clickCount = 0;
 //   }
+// });
 
+// function populateFrame () {
+// const entryURL = this.closest('li').querySelector('a').href
+// this.closest('li').querySelector('iframe').src = entryURL
+// this.closest('li').querySelector('iframe').style.display = 'unset'
+// this.closest('li').querySelector('#articleButton').innerText = "Close Article"
+// this.closest('li').querySelector('#articleButton').data = "closeNow"
 // }
-// }
-// )
-// })
