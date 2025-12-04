@@ -2,11 +2,25 @@
   display: none;
 }
 
+.shareicons{
+  display: flex;
+  flex-direction: row;
+  justify-content: space-evenly;
+}
+
 .allbuttons {
   display: flex !important;
   flex-direction: row;
   justify-content: space-evenly !important;
   align-items: center;
+}
+
+/* #articleButton{
+  width: 10%;
+} */
+
+#shareText {
+  padding-top: 2%;
 }
 
 #submitNewFeed {

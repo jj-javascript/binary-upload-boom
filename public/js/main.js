@@ -96,11 +96,11 @@ Array.from(articleButton).forEach(function(element){
       const entryURL = this.closest('li').querySelector('a').href;
       this.closest('li').querySelector('iframe').src = entryURL;
       this.closest('li').querySelector('iframe').style.display = 'unset';
-      this.innerText = "Close Article";
+      this.innerText = "Close";
     } else if(clickCount === 2) {
       this.closest('li').querySelector('iframe').src = '';
       this.closest('li').querySelector('iframe').style.display = 'none';
-      this.innerText = "Read Article";
+      this.innerText = "Read";
       clickCount = 0;
     }
   });

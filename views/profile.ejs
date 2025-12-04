@@ -35,7 +35,7 @@
         <span><a href="<%= entries[i].url %>" target="_blank">
           <%= entries[i].title -%>
           </a></span>
-          <button class="extend square round center large-elevate" id="articleButton" data=""><span>Read Article</span></button>
+          <button class="extend square round center large-elevate responsive" id="articleButton" data=""><span>Read</span></button>
         <span>
           <iframe class="max" src="" id="articleFrame"></iframe>
         </span>
@@ -53,8 +53,8 @@
         </span>
         <div class="allbuttons">
         <div class="sharebutton primary">
-          <span class="share">Share</span>
-          <div class="container tertiary">
+          <span class="share" id="shareText">Share</span>
+          <div class="container tertiary shareicons">
 
              <a href="https://www.facebook.com/sharer/sharer.php?u=<%= entries[i].url %>" target="_blank"><i class="fab fa-facebook-f"></i></a>
         
@@ -69,7 +69,7 @@
       </div>
           <button class="fa fa-star <%= entries[i].favorited ? 'fa-solid' : 'fa-regular' -%>" type="submit" data-id="<%= entries[i]._id -%>" data-favorited="<%= entries[i].favorited -%>"></button>
         <form action="/entry/deleteEntry/<%= entries[i]._id -%>?_method=DELETE" method="POST" class="col-3">
-          <button class="fa fa-trash responsive" type="submit" id="deleteButton">Delete</button>
+          <button class="fa fa-trash responsive" type="submit" id="deleteButton">  Delete</button>
         </form>
       </div>
         </article>
